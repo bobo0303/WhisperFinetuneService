@@ -1,0 +1,14 @@
+csv
+test.py
+panding_audio.py
+*.csv
+.git  
+*.tmp  
+*.log  
+models/*
+deb/*
+lib/azure_config.yaml
+app.yml
+audio/202*
+models/*
+
