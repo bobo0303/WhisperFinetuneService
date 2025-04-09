@@ -24,3 +24,5 @@ ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu:/usr/lib/llv
 ENV PYTHONUTF8=1  
 
 RUN rm /tmp/requirements.txt
+
+# docker run -d -it --gpus all --shm-size 32G --runtime nvidia --device=/dev/nvidia-uvm --device=/dev/nvidia-uvm-tools --device=/dev/nvidiactl --device=/dev/nvidia0 --name wf_service -p 52011:80 -v /userdata/bobo/whisper_finetune_train:/mnt2 -v /userdata/bobo/whisper_finetune_service:/mnt -v /userdata/bobo/whisper_finetune_service/tmp:/tmp wf_service:v0.0.1 bash

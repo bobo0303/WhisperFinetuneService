@@ -5,6 +5,7 @@ lib/azure_config.yaml
 app.yml
 audio/202*
 models/*
+tmp/*
 
 # Byte-compiled / optimized / DLL files  
 __pycache__/  
