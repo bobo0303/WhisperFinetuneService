@@ -6,6 +6,7 @@ app.yml
 audio/202*
 models/*
 tmp/*
+tt.py
 
 # Byte-compiled / optimized / DLL files  
 __pycache__/  
