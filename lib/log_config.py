@@ -6,7 +6,6 @@ import os
   
 class TaipeiFormatter(logging.Formatter):  
     def converter(self, timestamp):  
-        # 將 UTC 時間轉換為台北時間  
         dt = datetime.datetime.fromtimestamp(timestamp, pytz.utc)  
         return dt.astimezone(pytz.timezone('Asia/Taipei'))  
   
@@ -15,7 +14,6 @@ class TaipeiFormatter(logging.Formatter):
         if datefmt:  
             return dt.strftime(datefmt)  
         else:  
-            # 如果沒有提供 datefmt，則使用默認格式  
             return dt.strftime("%Y-%m-%d %H:%M:%S")  
   
 def setup_logger(logger_name, log_file):  
@@ -52,8 +50,7 @@ def configure_utc8_time():
     local_now = utc_now.astimezone(tz)  
     return local_now  
   
-# 設置根記錄器，確保所有日誌輸出格式一致  
 log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"  
 logging.basicConfig(level=logging.INFO, format=log_format, handlers=[  
-    logging.StreamHandler()  # 只保留控制台輸出  
+    logging.StreamHandler()  
 ])  

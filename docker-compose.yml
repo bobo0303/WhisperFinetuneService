@@ -2,7 +2,7 @@ version: '3.8'
   
 services:  
   bv_service:  
-    image: wf_service:v0.0.1
+    image: wf_service:v0.0.2
     runtime: nvidia  
     shm_size: 32G  
     deploy:  

@@ -1,16 +1,14 @@
-from pydantic import BaseModel
-import torch
-from datetime import datetime
-
 #############################################################################
-
+""" path constants """
+TMPPATH = "/tmp"
 MODELPATH = "/tmp/models"
 TASKPATH = "/tmp/tasks"
 AUDIOPATH = "/tmp/audio"
 JSONPATH = "/tmp/json"
+TESTPATH = "/tmp/test"
 
 #############################################################################
-
+""" model include below """
 ZIP_REQUIRED = [  
     "added_tokens.json",  
     "config.json",  
@@ -30,3 +28,8 @@ SAFETENSORS_REQUIRED = "model.safetensors.index.json"
 CONFIG = "lib/preprocessor_config.json"
 
 # url = "http://172.17.0.1:52010/get_audio"  # bv_service
+
+#############################################################################
+
+# shut down retry times
+RETRAYTIME = 5

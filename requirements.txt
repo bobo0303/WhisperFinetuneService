@@ -1,11 +1,11 @@
-transformers[torch] # 4.51.1
+transformers[torch] # 4.46.8
 accelerate>=0.26.0
 datasets
 tqdm
 numpy
 opencc-python-reimplemented 
 pydub  
-
+watchdog
 wget==3.2
 fastapi==0.111.0
 fastapi-cli==0.0.4
