@@ -87,11 +87,11 @@ class LatestRetention(FileSystemEventHandler):
     """
     A watchdog event handler that retains only the latest model checkpoint file.
     """
-    def on_created(self, event: FileSystemEvent):  
+    def on_created(self, event):  
         """
         Called when a new file is created. Cleans up older checkpoints, retains the latest.
 
-        :param event: FileSystemEvent
+        :param event
             The file system event object containing event information.
         :return: None
         """

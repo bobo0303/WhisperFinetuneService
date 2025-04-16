@@ -1,5 +1,6 @@
 import io  
 import os  
+import csv
 import pytz  
 import time  
 import json  
@@ -596,26 +597,73 @@ def inference(task_id: str, audio_file: UploadFile = File(...)):
     logger.info(f" | transcription: {result} | model loading time: {loading_time:.2f} seconds | inference time: {inference_time:.2f} seconds | ")
     return BaseResponse(status="OK", message=f" | transcription: {result} | model loading time: {loading_time:.2f} seconds | inference time: {inference_time:.2f} seconds | ", data=result)
 
+##############################################################################  
+
+@app.post("/csv2json")  
+async def csv2json(task_id: str, file: UploadFile = File(...)):  
+    logger.info(f" | Start to read csv file | ")
+    if file.filename.endswith(".csv"):
+        content = await file.read()  
+        decoded_content = content.decode("utf-8").splitlines()  
+    else:
+        logger.error(f" | We only support csv file | ")
+        return BaseResponse(status="FAILED", message=f" | We only support csv file |", data=False)
+  
+    csv_reader = csv.DictReader(decoded_content)  
+    result = []  
+    for row in csv_reader:
+        audio = row["output_audio_filename"]+".wav"
+        # if os.isfile(os.path.join(AUDIOPATH, task_id, audio)):
+        result.append({  
+            "audio": audio,  
+            "text": row["content_to_synthesize"]  
+        })  
+    
+    logger.info(f" | Start to write json file | ")
+    json_filename = os.path.join(JSONPATH, file.filename.replace(".csv", ".json"))  
+    with open(json_filename, "w", encoding="utf-8") as json_file:  
+        json.dump(result, json_file, ensure_ascii=False, indent=4)  
+  
+    logger.info(f" | Generate json file successful | Total available pair {len(result)} | ")
+    # return BaseResponse(status="OK", message=f" | Generate json file successful | Total available pair {len(result)} | ", data=True)  
+    return FileResponse(json_filename, media_type='application/json', filename=file.filename.replace(".csv", ".json"))  
+
 
 ##############################################################################  
 
 # Clean up audio files  
-def delete_old_audio_files():  
-    """
-    Delete audio files older than one day from the audio directory, except for test files.
-    """
+def delete_old_files(directory, exception_files=None, age_limit_seconds=24*60*60):  
+    """  
+    Delete files older than age_limit_seconds from the specified directory, except for files in exception_files.  
+  
+    :param directory: Directory to delete files from  
+    :param exception_files: List of filenames to skip  
+    :param age_limit_seconds: Age limit in seconds for files to be deleted  
+    """  
     current_time = time.time()  
+    exception_files = exception_files or []  
+  
+    if os.path.exists(directory):  
+        for filename in os.listdir(directory):  
+            if filename in exception_files:  
+                continue  
+            file_path = os.path.join(directory, filename)  
+            if os.path.isfile(file_path):  
+                file_creation_time = os.path.getctime(file_path)  
+                if current_time - file_creation_time > age_limit_seconds:  
+                    os.remove(file_path)  
+                    logger.info(f"Deleted old file: {file_path}")  
+  
+def delete_old_audio_files():  
+    """  
+    Delete audio files older than one day from the audio directory, except for test files.  
+    """  
     audio_dir = "./audio"  
-    for filename in os.listdir(audio_dir):  
-        if filename == "test.wav":  # Skip specific file  
-            continue  
-        file_path = os.path.join(audio_dir, filename)  
-        if os.path.isfile(file_path):  
-            file_creation_time = os.path.getctime(file_path)  
-            # Delete files older than a day  
-            if current_time - file_creation_time > 24 * 60 * 60:  
-                os.remove(file_path)  
-                logger.info(f"Deleted old file: {file_path}")  
+    test_dir = "./test_audio"  
+    exception_files = ["test.wav"]  
+  
+    delete_old_files(audio_dir, exception_files)  
+    delete_old_files(test_dir, exception_files)
   
 # Daily task scheduling  
 def schedule_daily_task(stop_event):  

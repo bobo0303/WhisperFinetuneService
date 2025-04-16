@@ -42,13 +42,13 @@ def load_file_list(file_path: str):
             return set(file.read().splitlines())  
     return set()  
 
-def save_file_list(file_path: str, file_list: iterable):  
+def save_file_list(file_path: str, file_list: list):  
     """
     Save a list of filenames to a file, each on a new line.
 
     :param file_path: str
         Path where the file will be saved.
-    :param file_list: iterable
+    :param file_list: list
         The list or set of filenames to write.
     :return: None
     """
